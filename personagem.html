@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acessar Personagem - Matemática RPG</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0a0f2c 0%, #1a1f4c 100%);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #e0e0e0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .card {
+      background: rgba(20, 25, 50, 0.9);
+      border: 2px solid #f5c542;
+      border-radius: 20px;
+      padding: 40px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      animation: slideUp 0.6s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 36px;
+      color: #f5c542;
+      text-shadow: 0 0 20px rgba(245, 197, 66, 0.5);
+      margin-bottom: 10px;
+      letter-spacing: 2px;
+    }
+
+    .subtitle {
+      color: #aaa;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    .foto-preview {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .foto-circle {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #333, #111);
+      border: 3px solid #f5c542;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 70px;
+      box-shadow: 0 0 30px rgba(245, 197, 66, 0.4);
+      transition: all 0.3s ease;
+      opacity: 0;
+    }
+
+    .foto-circle.show {
+      opacity: 1;
+      animation: zoomIn 0.5s ease-out;
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0.8);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    .foto-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      font-size: 14px;
+      color: #f5c542;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    input {
+      padding: 15px;
+      border: 2px solid #333;
+      border-radius: 12px;
+      background-color: #141932;
+      color: white;
+      font-size: 16px;
+      font-family: 'Segoe UI', sans-serif;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #f5c542;
+      box-shadow: 0 0 15px rgba(245, 197, 66, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .mensagem {
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: none;
+      font-weight: 600;
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .mensagem.erro {
+      background-color: rgba(255, 77, 77, 0.2);
+      border: 1px solid #ff4d4d;
+      color: #ff9999;
+    }
+
+    .mensagem.aviso {
+      background-color: rgba(255, 193, 7, 0.2);
+      border: 1px solid #ffc107;
+      color: #ffe082;
+    }
+
+    .button-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 30px;
+    }
+
+    button {
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f5c542 0%, #d4a017 100%);
+      color: black;
+      box-shadow: 0 5px 15px rgba(245, 197, 66, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(245, 197, 66, 0.5);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background-color: #141932;
+      color: #f5c542;
+      border: 2px solid #f5c542;
+    }
+
+    .btn-secondary:hover {
+      background-color: #f5c542;
+      color: black;
+      transform: translateY(-2px);
+    }
+
+    .info-text {
+      text-align: center;
+      color: #999;
+      font-size: 13px;
+      margin-top: 20px;
+      line-height: 1.5;
+    }
+
+    .loading {
+      display: none;
+      text-align: center;
+      font-size: 16px;
+      color: #f5c542;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(245, 197, 66, 0.3);
+      border-radius: 50%;
+      border-top-color: #f5c542;
+      animation: spin 0.8s linear infinite;
+      margin-right: 10px;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 25px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+
+      .button-group {
+        grid-template-columns: 1fr;
+      }
+
+      .foto-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 50px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card">
+      <div class="header">
+        <h1>👤 ACESSAR PERSONAGEM</h1>
+        <p class="subtitle">Faça login para acessar sua conta</p>
+      </div>
+
+      <div class="foto-preview">
+        <div class="foto-circle" id="fotoCircle">👤</div>
+      </div>
+
+      <div id="mensagem" class="mensagem"></div>
+
+      <div class="form-group">
+        <label for="nome">Nome do Personagem</label>
+        <input type="text" id="nome" placeholder="Digite o nome..." onkeyup="verificarDados()">
+      </div>
+
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" placeholder="Digite a senha..." onkeyup="verificarDados()">
+      </div>
+
+      <div class="loading" id="loading">
+        <div class="spinner"></div>
+        <span>Carregando...</span>
+      </div>
+
+      <div class="button-group">
+        <button class="btn-secondary" onclick="voltarHome()">← Voltar</button>
+        <button class="btn-primary" id="btnAcessar" onclick="acessarPersonagem()" disabled>
+          ✨ Acessar
+        </button>
+      </div>
+
+      <div class="info-text">
+        💡 Digite seu nome e senha para acessar seu personagem e visualizar suas informações.
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function verificarDados() {
+      let nome = document.getElementById('nome').value.trim();
+      let senha = document.getElementById('senha').value.trim();
+      let btnAcessar = document.getElementById('btnAcessar');
+      let fotoCircle = document.getElementById('fotoCircle');
+      let mensagem = document.getElementById('mensagem');
+
+      if (nome === '' || senha === '') {
+        btnAcessar.disabled = true;
+        fotoCircle.classList.remove('show');
+        mensagem.style.display = 'none';
+        return;
+      }
+
+      // Busca no localStorage
+      let nomeArmazenado = localStorage.getItem("personagem_nome");
+      let senhaArmazenada = localStorage.getItem("personagem_senha");
+
+      if (nome === nomeArmazenado && senha === senhaArmazenada) {
+        btnAcessar.disabled = false;
+        mostrarFoto();
+        mensagem.style.display = 'none';
+      } else if (nome === nomeArmazenado || nomeArmazenado !== null) {
+        btnAcessar.disabled = true;
+        fotoCircle.classList.remove('show');
+        if (nome === nomeArmazenado && senha !== senhaArmazenada) {
+          mostrarMensagem('❌ Senha incorreta!', 'erro');
+        }
+      } else {
+        btnAcessar.disabled = true;
+        fotoCircle.classList.remove('show');
+        mensagem.style.display = 'none';
+      }
+    }
+
+    function mostrarFoto() {
+      let foto = localStorage.getItem("personagem_foto");
+      let fotoCircle = document.getElementById('fotoCircle');
+
+      if (foto) {
+        fotoCircle.innerHTML = `<img src="${foto}" alt="personagem">`;
+      } else {
+        fotoCircle.innerHTML = '👤';
+      }
+
+      fotoCircle.classList.add('show');
+    }
+
+    function mostrarMensagem(texto, tipo) {
+      const el = document.getElementById('mensagem');
+      el.textContent = texto;
+      el.className = `mensagem ${tipo}`;
+      el.style.display = 'block';
+    }
+
+    function acessarPersonagem() {
+      let nome = document.getElementById('nome').value.trim();
+      let senha = document.getElementById('senha').value.trim();
+
+      let nomeArmazenado = localStorage.getItem("personagem_nome");
+      let senhaArmazenada = localStorage.getItem("personagem_senha");
+
+      if (nome === nomeArmazenado && senha === senhaArmazenada) {
+        document.getElementById('loading').style.display = 'block';
+        document.getElementById('btnAcessar').disabled = true;
+
+        setTimeout(() => {
+          window.location.href = 'visualizar.html';
+        }, 1000);
+      } else {
+        mostrarMensagem('⚠️ Nome ou senha incorretos!', 'erro');
+      }
+    }
+
+    function voltarHome() {
+      window.location.href = 'index.html';
+    }
+
+    // Permitir Enter para acessar
+    document.getElementById('senha').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !document.getElementById('btnAcessar').disabled) {
+        acessarPersonagem();
+      }
+    });
+  </script>
+
+</body>
+</html>
